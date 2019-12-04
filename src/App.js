@@ -15,7 +15,7 @@ class App extends Component{
     // this.componentDidMount=this.componentDidMount.bind(this)
   }
 
-  componentDidMount(){
+  componentDidMount=()=>{
     console.log('component did mount')
     axios.get('/api/inventory').then(res=>{
       this.setState({
@@ -28,7 +28,7 @@ class App extends Component{
   render(){
     return (
       <div className="App">
-        <Dashboard inventory={this.state.inventory}/>
+        <Dashboard inventory={this.state.inventory} get={this.componentDidMount}/>
         <Form get={this.componentDidMount}/>
         <Header/>
       </div>

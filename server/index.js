@@ -10,6 +10,7 @@ app.use(express.json())
 //endpoints
 app.get('/api/inventory', ctrl.getInventory)
 app.post('/api/product', ctrl.addProduct)
+// app.delete('/api/product/:id', ctrl.delete)
 
 massive(CONNECTION_STRING).then(db=>{
     app.set('db',db)
