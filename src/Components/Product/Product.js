@@ -5,6 +5,7 @@ class Product extends Component {
         return(
             <div>
                 Product
+                {this.props.list}
             </div>
         )
     }
