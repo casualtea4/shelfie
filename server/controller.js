@@ -13,11 +13,30 @@ module.exports={
         
 
         db.add_product([name,price,img]).then(product=>{
-            res.status(200).send(products)
+            res.status(200).send(product.data)
         }).catch(err => {
             res.status(500).send(err)
         })
     },
+    delete: (req,res)=>{
+        const db = req.app.get('db')
+        const {id} = req.params
+
+        db.delete_product(id).then(()=>
+        res.sendStatus(200))
+        .catch(err => {res.status(500).send(err)}
+        )
+    },
+    update: (req,res) => {
+        const db = req.app.get('db')
+        const {id} = req.params
+        const {name,price,img} = req.body;
+
+        db.update_product([name,price,img,id]).then(res => {
+        res.status(200).send(res.data)
+        })
+        .catch(err=>{res.status(500).send(err)})
+    }
     // delete:(req.res)=>{
     //     const db = req.app.get('db')
     //     const {id} = req.params

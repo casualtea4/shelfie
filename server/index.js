@@ -10,13 +10,14 @@ app.use(express.json())
 //endpoints
 app.get('/api/inventory', ctrl.getInventory)
 app.post('/api/product', ctrl.addProduct)
-// app.delete('/api/product/:id', ctrl.delete)
+app.delete('/api/product/:id', ctrl.delete)
+app.put('/api/product/:id', ctrl.update)
 
 massive(CONNECTION_STRING).then(db=>{
     app.set('db',db)
-    // console.log('db connected')
+    console.log('db connected')
 }).catch(err=>console.log(err))
 
 app.listen(SERVER_PORT, ()=>{
-    console.log('server running on 3030')
+    console.log(`server on ${SERVER_PORT}`)
 })

@@ -7,71 +7,110 @@ class Form extends Component {
         this.state={
             name:'',
             price:0,
-            img:''
+            img:'',
+            id: '',
+            edit: false
         }
     }
-    nameInput(e){
-        this.setState({
-            name:e.target.value
-        })
-        // console.log(this.state.name)
+
+    componentDidUpdate(oldProps){
+        let {id,name,price,img} = this.props.editProduct
+        if(oldProps.editProduct.id !== this.props.editProduct.id){
+            this.setState({
+                name,price,img,id,edit:true
+            })
+        }
     }
 
-    priceInput(e){
+    handleInput=(e)=>{
         this.setState({
-            price:e.target.value
+            [e.target.name]: e.target.value
         })
-        // console.log(this.state.price)
-    }
-
-    imgInput(e){
-        this.setState({
-            img:e.target.value
-        })
-        // console.log(this.state.img)
     }
 
     cancel=()=>{
         this.setState({
             name:'',
             price:0,
-            img:''
+            img:'',
+            edit:!this.state.edit
         })
     }
 
-    add=(body)=>{
-        console.log('add was clicked')
-        axios.post('/api/product', body).then(res=>{
-            console.log(res)
+    add=()=>{
+        const {name,price,img} = this.state;
+        // console.log('add was clicked')
+        axios.post('/api/product', {name,price,img} ).then(res=>{
+            console.log(res.data)
             this.setState({
-                name:res.config.data,
-                price:res.config.data,
-                img:res.config.data
+                inventory: res.data
             })
-            // console.log('add method finished')
-            console.log(this.state.name)
-            console.log(this.state.price)
-            console.log(this.state.img)
+            this.props.get();
+            this.cancel();
         })
-        // props
-        // cancel
+        
+    }
+
+    save = () => {
+        const {name,price,img} = this.state;
+        const {id} = this.props.editProduct;
+        this.props.editFn(id,{name,price,img})
+        this.props.get()
+        this.cancel()
+        this.setState({
+            edit: !this.state.edit
+        })
+
     }
 
     render(){
         return(
             <div>
                 Form
-                <input onChange={e=> this.nameInput(e)} placeholder='product name' value={this.state.name}/>
-                <input onChange={e=> this.priceInput(e)} placeholder='price' value={this.state.price}/>
-                <input onChange={e=> this.imgInput(e)} placeholder='img url' value={this.state.img}/>
+                <div>
+                <input onChange={e=> this.handleInput(e)} placeholder='product name' 
+                value={this.state.name}
+                name='name'/>
+                <input onChange={e=> this.handleInput(e)}
+                placeholder='price'
+                value={this.state.price}
+                name='price'/>
+                <input onChange={e=> this.handleInput(e)}
+                 placeholder='img url'
+                 value={this.state.img}
+                 name='img'/>
+                </div>
+
+                <div>
                 <button onClick={this.cancel}>Cancel </button>
-                {/* <button onClick={()=>this.add({name,price,img})}>Add</button> */}
-                {/* <button onClick={()=>this.add(this.state.name,this.state.price,this.state.img)}>Add to Inventory</button> */}
-                <button onClick={()=>this.add(1)}>Add to Inventory</button>
-                {/* {this.state.name} */}
+                {!this.state.edit? <button onClick={()=> this.add()}>add to inventory</button>:<button onClick={()=>this.save()}>save changes</button>}
+                </div>
             </div>
         )
     }
 }
 
 export default Form
+
+
+
+ // nameInput(e){
+    //     this.setState({
+    //         name:e.target.value
+    //     })
+    //     // console.log(this.state.name)
+    // }
+
+    // priceInput(e){
+    //     this.setState({
+    //         price:e.target.value
+    //     })
+    //     // console.log(this.state.price)
+    // }
+
+    // imgInput(e){
+    //     this.setState({
+    //         img:e.target.value
+    //     })
+    //     // console.log(this.state.img)
+    // }

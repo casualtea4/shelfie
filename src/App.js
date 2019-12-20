@@ -10,27 +10,51 @@ class App extends Component{
   constructor(){
     super();
     this.state={
-      inventory:[]
+      inventory:[],
+      editProduct: {}
     }
-    // this.componentDidMount=this.componentDidMount.bind(this)
   }
 
   componentDidMount=()=>{
-    console.log('component did mount')
+    // console.log('component did mount')
+    this.getInventory()
+  }
+
+  getInventory = () => {
     axios.get('/api/inventory').then(res=>{
       this.setState({
         inventory:res.data
       })
-      console.log(res.data)
+    })
+  }
+
+  selectProduct =(i)=>{
+    this.setState({
+      editProduct:i
+    })
+  }
+
+  edit = (id,body) => {
+    axios.put(`/api/product/${id}`, body).then(res=>{
+      this.setState({
+        inventory: res.data
+      })
     })
   }
   
   render(){
+    console.log(this.state.inventory)
     return (
       <div className="App">
-        <Dashboard inventory={this.state.inventory} get={this.componentDidMount}/>
-        <Form get={this.componentDidMount}/>
         <Header/>
+        <Dashboard 
+        inventory={this.state.inventory} 
+        get={this.componentDidMount} 
+        selectFn ={ this.selectProduct}/>
+        <Form 
+        get={this.componentDidMount} 
+        editProduct = {this.state.editProduct} 
+        editFn = {this.edit}/>
       </div>
     );
   }
